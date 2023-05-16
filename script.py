@@ -21,7 +21,7 @@ def runhost(_ip,_UN,_PW):
     twrssh = paramiko.SSHClient()
     twrssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
     try:
-        twrssh.connect(_ip, port=22, username=_UN, password=_PW)
+        twrssh.connect(_ip, port=22, username=_UN, password=_PW, timeout= 10)
         remote = twrssh.invoke_shell()
     except:
         print("ERROR !!!!! ------------->>> connection to host failed...")
