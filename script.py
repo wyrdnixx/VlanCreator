@@ -1,4 +1,3 @@
-
 import paramiko
 import time
 import getpass
@@ -37,7 +36,8 @@ def runhost(_ip,_UN,_PW):
         s = s.replace("$NEW_VLAN_FIREWALL_IP",NEW_VLAN_FIREWALL_IP)
         s = s.replace("$NEW_VLAN_FIREWALL_SUBNET",NEW_VLAN_FIREWALL_SUBNET)
         s = s.replace("$NEW_VLAN_FIREWALL_SNMASK",NEW_VLAN_FIREWALL_SNMASK)
-        s = s.replace("$NEW_VLAN_FIREWALL_ZONE",NEW_VLAN_FIREWALL_ZONE)
+        s = s.replace("$FIREWALL_ZONE_FN",FIREWALL_ZONE_FN)
+        s = s.replace("$FIREWALL_ZONE_TT",FIREWALL_ZONE_TT)
         s = s.replace("$NEW_VLAN_VMNET_NAME",NEW_VLAN_VMNET_NAME)
 
         print(f"running command: {s}")            
@@ -80,7 +80,8 @@ NEW_VLAN_FIREWALL_IFALIAS = vlan_info['NEW_VLAN_FIREWALL_IFALIAS']
 NEW_VLAN_FIREWALL_IP = vlan_info['NEW_VLAN_FIREWALL_IP']
 NEW_VLAN_FIREWALL_SUBNET = vlan_info['NEW_VLAN_FIREWALL_SUBNET']
 NEW_VLAN_FIREWALL_SNMASK = vlan_info['NEW_VLAN_FIREWALL_SNMASK']
-NEW_VLAN_FIREWALL_ZONE = vlan_info['NEW_VLAN_FIREWALL_ZONE']
+FIREWALL_ZONE_FN = vlan_info['FIREWALL_ZONE_FN']
+FIREWALL_ZONE_TT = vlan_info['FIREWALL_ZONE_TT']
 NEW_VLAN_VMNET_NAME = vlan_info['NEW_VLAN_VMNET_NAME']
 
 
@@ -139,5 +140,4 @@ for host in hosts:
                     runhost(ip,UN, PW)        
             else:
                 print("host was skipped...")
-
 
