@@ -6,48 +6,56 @@
         "NEW_VLAN_NAME":"TRF-Medico-Test",
         "NEW_VLAN_ID":"2910",
         "NEW_VLAN_ISID":"12910",         
-        "NEW_VLAN_FIREWALL_ADDRESS":"TRF_n_10.119.10.0/24_Medico-Testsys",
+        "NEW_VLAN_FIREWALL_ADDRESS":"TRF_n_10.119.10.0/24_Medico-Test",
         "_comment_NEW_VLAN_FIREWALL_IFALIAS": "NEW_VLAN_FIREWALL_IFALIAS max 25 Characters!",
-        "NEW_VLAN_FIREWALL_IFALIAS":"TRF-2910-Medico-Testsys",
+        "NEW_VLAN_FIREWALL_IFALIAS":"FN-2910-TRF-Medico-Test",
         "NEW_VLAN_FIREWALL_IP": "10.119.10.1",
         "NEW_VLAN_FIREWALL_SUBNET":"10.119.10.0",
         "NEW_VLAN_FIREWALL_SNMASK": "255.255.255.0",
-        "NEW_VLAN_FIREWALL_ZONE": "Zone_Server",
-        "NEW_VLAN_VMNET_NAME":"TRF-2910-Medico-Testsys"
+        "FIREWALL_ZONE_FN": "Zone_Transfernetze",
+        "FIREWALL_ZONE_TT": "Zone_MPLS",
+        "NEW_VLAN_VMNET_NAME":"FN-2910-TRF-Medico-Test"
         
 
     },    
-    "hosts": [
+    "hosts": [        
         {
             "enabled": true,
             "systype": "switch",
             "user":"admin",
-            "name": ["10.108.8.65","10.108.8.66"],
-            "commands": ["CTRL_Y", "ena", "show interface 1/1" ]
+            "name": ["10.10.239.132"],            
+            "commands": ["CTRL_Y", "ena",  "conf t", "vlan create $NEW_VLAN_ID name  $NEW_VLAN_NAME type port-mstprstp 1", "vlan i-sid $NEW_VLAN_ID $NEW_VLAN_ISID", "vlan members add $NEW_VLAN_ID 1/1,1/2,1/4,1/8,1/12,1/15,1/17,1/19,1/21,1/24" ]
         },
         {
             "enabled": true,
             "systype": "switch",
             "user":"admin",
-            "name": ["10.108.8.75"],            
-            "commands": ["CTRL_Y", "ena", "show interface 1/2" ]
+            "name": ["10.10.239.133"],            
+            "commands": ["CTRL_Y", "ena",  "conf t", "vlan create $NEW_VLAN_ID name  $NEW_VLAN_NAME type port-mstprstp 1", "vlan i-sid $NEW_VLAN_ID $NEW_VLAN_ISID", "vlan members add $NEW_VLAN_ID 1/1,1/2,1/3,1/4,1/8,1/12,1/15,1/17,1/19" ]
         },
         {
             "enabled": true,
             "systype": "switch",
             "user":"admin",
-            "name": ["10.10.239.139","10.10.239.140","10.10.239.200","10.10.239.201"],            
-            "commands": ["CTRL_Y", "ena", "conf t","terminal more disable", "show mlt 53" ]
+            "name": ["10.10.239.134"],            
+            "commands": ["CTRL_Y", "ena",  "conf t", "vlan create $NEW_VLAN_ID name  $NEW_VLAN_NAME type port-mstprstp 1", "vlan i-sid $NEW_VLAN_ID $NEW_VLAN_ISID", "vlan members add $NEW_VLAN_ID 1/1,1/4,1/7,1/8,1/10,1/12,1/17,1/19,1/20,1/22" ]
         },
         {
-            "enabled": false,
+            "enabled": true,
+            "systype": "switch",
+            "user":"admin",
+            "name": ["10.10.239.135"],            
+            "commands": ["CTRL_Y", "ena",  "conf t", "vlan create $NEW_VLAN_ID name  $NEW_VLAN_NAME type port-mstprstp 1", "vlan i-sid $NEW_VLAN_ID $NEW_VLAN_ISID", "vlan members add $NEW_VLAN_ID 1/1,1/4,1/7,1/8,1/10,1/17,1/18,1/12,1/19,1/21" ]
+        },   
+        {
+            "enabled": true,
             "systype": "switch",
             "user":"admin",
             "name": ["10.10.239.139","10.10.239.140","10.10.239.200","10.10.239.201"],            
             "commands": ["CTRL_Y", "ena", "conf t", "vlan create $NEW_VLAN_ID name $NEW_VLAN_NAME type port-mstprstp 1", "vlan i-sid $NEW_VLAN_ID $NEW_VLAN_ISID", "mlt 53 vlan $NEW_VLAN_ID" ]
         },        
         {
-            "enabled": false,
+            "enabled": true,
             "systype": "firewall ",
             "user":"hehn",
             "name": ["10.102.99.1"],            
@@ -72,13 +80,44 @@
                 "next",
                 "end",
                 "config system zone",
-                "edit $NEW_VLAN_FIREWALL_ZONE",
+                "edit $FIREWALL_ZONE_FN",
                 "append interface Vlan_$NEW_VLAN_ID",
                 "end"
             ]
         } ,
         {
-            "enabled": false,
+            "enabled": true,
+            "systype": "firewall ",
+            "user":"hehn",
+            "name": ["10.10.32.1"],            
+            "commands": [
+                "config vdom",
+                "edit FG-traffic",
+                "config system interface",
+                "edit Vlan_$NEW_VLAN_ID",
+                "set vdom FG-traffic",
+                "set ip $NEW_VLAN_FIREWALL_IP $NEW_VLAN_FIREWALL_SNMASK",
+                "set allowaccess ping",
+                "set alias $NEW_VLAN_FIREWALL_IFALIAS",
+                "set device-identification enable",
+                "set role lan",
+                "set interface LACP",
+                "set vlanid $NEW_VLAN_ID",
+                "next",
+                "end",
+                "config firewall address",
+                "edit $NEW_VLAN_FIREWALL_ADDRESS",
+                "set subnet $NEW_VLAN_FIREWALL_SUBNET $NEW_VLAN_FIREWALL_SNMASK",
+                "next",
+                "end",
+                "config system zone",
+                "edit $FIREWALL_ZONE_TT",
+                "append interface Vlan_$NEW_VLAN_ID",
+                "end"
+            ]
+        } ,
+        {
+            "enabled": true,
             "systype": "vmware",
             "name": ["vcsa.mecabo.de"]
         }
